@@ -64,16 +64,28 @@ int ft_strlen(const char *str)
     return (i);    
 }
 
-void SIG1_HAN()
-{
-    write(1,"SIGUSR1 handled\n", 16);
-}
+void SIG_HAN(int sign)
+{	
+	static int	buff[100];
+	static int	i;
+	int j = 0;
 
-void SIG2_HAN()
-{
-    write(1,"SIGUSR2 handled\n", 16);
-}
+	if (sign == SIGUSR1)
+	{
+		write(1,"SIGUSR1 handled\n", 16);
+		buff[i] = 1;
+		i++;
+	}
+	else if (sign == SIGUSR2)
+	{
+		write(1,"SIGUSR2 handled\n", 16);
+		buff[i] = 0;
+		i++;
+	}	
 
+		printf("i: %d\n", i);
+		printf("buff[i]: %d\n", buff[i]);
+}
 int main(int argc, char **argv)
 {   
     int server_pid;
@@ -90,10 +102,10 @@ int main(int argc, char **argv)
     write(1, ft_itoa(server_pid), ft_strlen(ft_itoa(server_pid))); 
     write(1, "\n", 1);
 
-    signal(SIGUSR1, SIG1_HAN);
-    signal(SIGUSR2, SIG2_HAN);
-    
-
-    while (1) {}
+    while (1)
+	{
+		signal(SIGUSR1, SIG_HAN);
+		signal(SIGUSR2, SIG_HAN);
+	}
 
 }
