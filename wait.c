@@ -28,5 +28,15 @@ int main (void)
         printf("\n");*/
 
     //printf("%c\n", 75);
+    int i;
+    int j;
+
+    i = 64;
+    j = 64;
+
+    if (i | j)
+        printf("true\n");
+    printf("%d\n", (i | j));    
+    
     return (0);           
 }

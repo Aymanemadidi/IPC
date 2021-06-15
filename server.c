@@ -66,25 +66,37 @@ int ft_strlen(const char *str)
 
 void SIG_HAN(int sign)
 {	
-	static int	buff[100];
-	static int	i;
-	int j = 0;
+	static size_t	i;
+	static int		bit;
+	static char		buf[1001];//stores ascii codes
 
+	if (--bit == -1)
+	{
+		bit = 6;
+		++i;
+	}
+	//buf[i] &= /*~(1 << 7)*/127;
 	if (sign == SIGUSR1)
 	{
-		write(1,"SIGUSR1 handled\n", 16);
-		buff[i] = 1;
-		i++;
+		buf[i] |= (1 << bit);//adds the corresponding 1 bit ascii value to buf[i]
+		//printf("%d\n", bit);
+		//printf("%d\n", i);
+		//printf("%d\n", buf[i]);
 	}
+		
 	else if (sign == SIGUSR2)
+		buf[i] &= ~(1 << bit);//keeps buf[i] the same
+	if (i == 1000 || buf[i] == 127)
 	{
-		write(1,"SIGUSR2 handled\n", 16);
-		buff[i] = 0;
-		i++;
-	}	
-
-		printf("i: %d\n", i);
-		printf("buff[i]: %d\n", buff[i]);
+		if (buf[i] == 127)
+			printf("true\n");
+		buf[i] = 0;
+		write(STDOUT_FILENO, buf, i + 1);
+		write(1,"\n",1);
+		ft_memset(buf, '\0', 99);
+		i = 0;
+		bit = 0;
+	}
 }
 int main(int argc, char **argv)
 {   
