@@ -17,6 +17,20 @@ void	*ft_memset(void *b, int c, size_t n)
 	}
 	return (b);
 }
+void	ft_putstr(char *s)
+{
+	int i;
+
+	i = 0;
+	if (s)
+	{
+		while (s[i])
+		{
+			write(1, &s[i], 1);
+			i++;
+		}
+	}
+}
 int		len(long nb)
 {
 	int		len;
@@ -76,11 +90,14 @@ int ft_strlen(const char *str)
 }
 
 void SIG_HAN(int sign)
-{	
+{
 	static size_t	i;
 	static int		bit;
-	static char		buf[1001];//stores ascii codes
+	clock_t 		begin;
+	static char		buf[10000];//stores ascii codes
 
+	if (i == 0)
+		begin = clock();
 	if (--bit == -1)
 	{
 		bit = 6;
@@ -90,24 +107,32 @@ void SIG_HAN(int sign)
 	if (sign == SIGUSR1)
 	{
 		buf[i] |= (1 << bit);//adds the corresponding 1 bit ascii value to buf[i]
+		//write(STDOUT_FILENO, &buf[i], 1);
 		//printf("%d\n", bit);
 		//printf("%d\n", i);
 		//printf("%d\n", buf[i]);
 	}
 		
 	else if (sign == SIGUSR2)
-		buf[i] &= ~(1 << bit);//keeps buf[i] the same
-	if (i == 1000 || buf[i] == 127)
 	{
-		if (buf[i] == 127)
-			printf("true\n");
+		buf[i] &= ~(1 << bit);//keeps buf[i] the same
+		//write(STDOUT_FILENO, &buf[i], 1);
+	}
+		
+	if (buf[i] == 127)
+	{
+		/*if (buf[i] == 127)
+			printf("true\n");*/
 		buf[i] = 0;
-		write(STDOUT_FILENO, buf, i + 1);
+		//write(STDOUT_FILENO, buf, i + 1);
 		write(1,"\n",1);
+		clock_t end = clock();
+		//printf("time spent: %lu\n", (end - begin) / CLOCKS_PER_SEC);
 		ft_memset(buf, '\0', 99);
 		i = 0;
 		bit = 0;
 	}
+
 }
 int main(int argc, char **argv)
 {   

@@ -5,6 +5,9 @@
 #include <time.h>
 #include <stdio.h>
 
+clock_t  begin;
+clock_t end;
+
 static int	ft_atoi(const char *str)
 {
 	long	i;
@@ -36,6 +39,7 @@ static int	ft_atoi(const char *str)
 
 static int	send_ascii(pid_t pid, char c)
 {
+	
 	int	bit;
 
 	bit = 6;
@@ -62,13 +66,15 @@ static int	send_message(pid_t pid_server, char *str)
 			return (1);
 		++i;
 	}
+	end = clock();
 	i = 0;
-	while (i < 7)
+	while (i < 7) // send finall blow;
 	{
 		kill(pid_server, SIGUSR1);
 		usleep(1000);
 		i++;
 	}
+	//printf("time spent: %lu\n", (end - begin));
 	return (0);
 }
 
@@ -86,6 +92,7 @@ int			main(int argc, char **argv)
 		write(2, "Unknow PID.\n", 32);
 		return (1);
 	}
+	begin = clock();
 	send_message(pid_server, argv[2]);
 	return (0);
 }
